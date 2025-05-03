@@ -1,0 +1,35 @@
+{
+  "name": "whats-reminder",
+  "version": "1.0.0",
+  "description": "none",
+  "main": "index.js",
+  "scripts": {
+    "push": "vercel build && vercel --prod",
+    "start": "nodemon index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomsdroid/whats-reminder.git"
+  },
+  "keywords": [
+    "whatsapp",
+    "whatsapp-socket",
+    "socket",
+    "baileys"
+  ],
+  "author": "tomsdroid (auragears)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tomsdroid/whats-reminder/issues"
+  },
+  "homepage": "https://github.com/tomsdroid/whats-reminder#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
+    "baileys": "^6.7.16",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
