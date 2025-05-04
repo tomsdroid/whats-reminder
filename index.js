@@ -5,10 +5,8 @@ const {
 } = require("baileys");
 const pino = require("pino");
 const cron = require("node-cron");
-const { readAllUsers } = require("./services/user-services");
-const { getDrugForUser, getUserWithDrug } = require("./services/drug-services");
 require("dotenv").config();
-const db = require("./services/database");
+const db = require("./service/database");
 
 // Ganti dengan nomor telepon Anda (dengan kode negara, contoh: 628xxxxxxxxxx)
 const nomorTeleponAnda = process.env.OWNER_WA;
@@ -40,19 +38,9 @@ async function connectToWhatsApp(nomorTeleponAnda) {
             const now = new Date();
 
             cron.schedule(
-                "* 21 * * *",
+                "50 22 * * *",
                 async () => {
-                    // pesanPengingat
-                    const pesanPengingat = `*HAI ${user.username}*
-=========================
-Saatnya minum obat _*${drug.nama_obat}*_
-sesuai ketentuan: ${drug.ketentuan_obat}.
-Dosis: ${drug.sekali_berapa}x dalam ${drug.sehari_berapa}x sehari.
-
-Obat Tersisa: ${drug.total_obat}
-
-> Bot: Pil Reminder WhatsApp`;
-                    const userPhone = user.phone;
+                    // kirim pesanPengingat
 
                     await sendReminderDrug(sock);
                 },
@@ -70,7 +58,7 @@ Obat Tersisa: ${drug.total_obat}
 
 async function kirimPesanWhatsApp(sock, nomorPenerima, pesan) {
     try {
-        const jid = `${nomorPenerima}@s.whatsapp.net`;
+        const jid = `62${nomorPenerima}@s.whatsapp.net`;
         await sock.sendMessage(jid, { text: pesan });
         console.log(`Pesan berhasil dikirim ke ${nomorPenerima}: ${pesan}`);
     } catch (error) {
@@ -113,11 +101,9 @@ Obat Tersisa: ${newTotalObat}
 
 > Bot: Pil Reminder WhatsApp`;
             try {
-                const jid = `${user.phone}@s.whatsapp.net`;
+                const jid = `62${user.phone}@s.whatsapp.net`;
                 await sock.sendMessage(jid, { text: pesanPengingat });
-                console.log(
-                    `Pesan berhasil dikirim ke ${user.phone}: ${pesanPengingat}`
-                );
+                console.log(`Pesan berhasil dikirim ke +${user.phone}:\n${pesanPengingat}`);
             } catch (error) {
                 console.error("Gagal mengirim pesan:", error);
             }
@@ -143,7 +129,15 @@ async function WARun(nomorPenerima, pesanPengingat) {
         if (connection === "open") {
             const now = new Date();
             console.info("Berhasil terhubung ke WhatsApp", nomorTeleponAnda);
-            cron.schedule("2 22 * * *", async () => {
+            cron.schedule("0 7 * * *", async () => {
+                console.log("Oke");
+                await sendReminderDrug(sock);
+            });
+            cron.schedule("0 14 * * *", async () => {
+                console.log("Oke");
+                await sendReminderDrug(sock);
+            });
+            cron.schedule("0 19 * * *", async () => {
                 console.log("Oke");
                 await sendReminderDrug(sock);
             });
@@ -173,4 +167,4 @@ function userGreating() {
 
 // const data = async () => {};
 
-module.exports = WARun;
+WARun();
